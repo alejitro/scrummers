@@ -6,7 +6,7 @@ var db = require('../../db.js')
 
 //Admin user creation
 //Function that allow create an admin in the app
-module.exports.createAdmin = (firstName,lastName,email,password,store,success,error)=>{
+module.exports.createAdmin = (firstName,lastName,email,password,success,error)=>{
     
     let query = `INSERT INTO user (firstName,lastName,email,password) VALUES (?, ?, ?, ?);`;
     db.query(query,[firstName,lastName,email,password],function(err,result){
@@ -32,8 +32,7 @@ module.exports.loginAdmin = (email, password, success, error) => {
                     let email = result[0].email;
                     security.generateToken(email).then(function(result){
                         success({'exito':true,'JWToken':result,'iduser':user,'email':email});
-                  });
-                    
+                    });  
                 }else{
                     error({'exito':false,'message': 'Contraseña errada'});
                 }

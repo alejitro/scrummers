@@ -3,53 +3,58 @@ var express = require('express')
 const fileUpload = require('express-fileupload');
 var routr = express();
 routr.use(fileUpload());
-var filesServices = require('../services/files.srv.js');
+var productsServices = require('../services/products.srv.js');
 
-routr.post('/creacion',(req, res) => {
-    if (!req.files) {
-        return res.status(400).send('no se adjunto ningun audio');
-      }
-        filesServices.crearArchivo(
-                req.body.observaciones,
-                req.body.nombre,
-                req.body.segundo_nombre,
-                req.body.apellido,
-                req.body.segundo_apellido,
-                req.body.concurso,
-                req.body.url,
-                req.files.audio,
-                req.body.correo,
-                function(archivo){
-                    res.status(201).send({'exito':true,'message':'archivo OK'});
-                },function(error){
-                    res.status(500).send({'message':'Error en la creacion del archivo'+error});
-                }
-            )
+routr.post('/create',(req, res) => {
+    let multimedia
+    if(req.files!=null){
+        multimedia=req.files.multimedia
+    }else{
+        multimedia="no-file"
+    }
+    productsServices.createProduct(
+        req.body.name,
+        req.body.idstore,
+        req.body.quantity,
+        multimedia,
+        req.body.urlstore,
+        function(){
+            res.status(201).send({'Success':true,'message':`product creation OK`});
+        },function(error){
+            res.status(500).send({'message':'Error creating product'+error});
+        }
+    )
 
 })
+
+routr.put('/update',(req, res) => {
+    productsServices.updateProduct(
+        req.body.name,
+        req.body.idstore,
+        req.body.urlstore,
+        req.body.quantity,
+        req.files.multimedia,
+        function(archivo){
+            res.status(201).send({'exito':true,'message':'archivo OK'});
+        },function(error){
+            res.status(500).send({'message':'Error en la creacion del archivo'+error});
+        }
+    )
+
+})
+
+routr.put('/update/inv/:quantity',(req, res) => {
+    productsServices.updateProductInventory(
+        req.body.idproduct,
+        req.body.idstore,
+        req.params.quantity,
+        function(product){
+            res.status(201).send({'exito':true,'message':`product ${product} inventory updated`});
+        },function(error){
+            res.status(500).send({'message':`Error updating product: `+error});
+        }
+    )
+
+})
+
 module.exports = routr;
-
-routr.post('/creacion-pruebas',(req, res) => {
-    if (!req.files) {
-        return res.status(400).send('no se adjunto ningun audio');
-      }
-    
-            for(var i=0;i<req.body.cantidad;i++){
-                filesServices.crearArchivo(
-                    req.body.observaciones,
-                    req.body.nombre,
-                    req.body.segundo_nombre,
-                    req.body.apellido,
-                    req.body.segundo_apellido,
-                    req.body.concurso,
-                    req.body.url,
-                    req.files.audio,
-                    req.body.correo,
-                    function(archivo){
-                    },function(error){
-                        res.status(500).send({'message':'Error en la creacion del archivo'+error});
-                    }
-                )
-            }
-            res.status(201).send({'exito':true,'message':'locutor OK','locutorId':locutor});            
-})

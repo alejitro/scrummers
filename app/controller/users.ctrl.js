@@ -11,10 +11,12 @@ routr.post('/create', (req, res) => {
         req.body.email,
         req.body.password,
         function (iduser) {
+            console.log("idUser",iduser)
             usersServices.loginAdmin(
                 req.body.email,
                 req.body.password,
                 function (user) {
+                    console.log("User",user)
                     res.status(201).send(user);
                 },function(error){
                     res.status(403).send(error);

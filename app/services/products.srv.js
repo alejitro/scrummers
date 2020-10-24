@@ -5,49 +5,31 @@ var conf = require('../../config.js');
 //const files = require('./files.srv');
 var db = require('../../db.js')
 
-const RUTA_GESTOR_ARCHIVOS = conf.RUTA_GESTION_ARCHIVOS
-const RUTA_GESTOR_ARCHIVOS_RAIZ = conf.RUTA_GESTION_ARCHIVOS_RAIZ
-
 const s3 = require('../../s3Storage');
 
 
 //Create store
-//Function that allow create a commerce in the app
-module.exports.createStore = (name,url,banner,idadmin,success,error)=>{
-    let nameBanner
-    banner===null?nameBanner='no-image':nameBanner=banner.name;
-    let query = `INSERT INTO stores (name,url,banner,idadmin) VALUES (?, ?, ?,?);`;
-    db.query(query,[name,url,nameBanner,idadmin],function(err,result){
+//Function that allow create a product associated to a store in the app
+module.exports.createProduct = (name,idstore,quantity,file,urlstore,success,error)=>{
+    let nameFile
+    file===null?nameFile='no-file':nameFile=file.name;
+    let query = `INSERT INTO products (name,multimedia,quantity,store,urlstore) VALUES (?, ?,?,?,?);`;
+    db.query(query,[name,nameFile,quantity,idstore,urlstore],function(err,result){
         if(err){
             console.log(err)
             error(err);
         }else{
-         //Si es correcto se crea la carpeta del store para la gestion de files
-            let queryid = `SELECT * FROM stores where url='${url}';`;
-            db.query(queryid,function(err,result){
-                if(err){
-                    console.log(err)
-                    error(err);
-                }else{
-                    let idstore=result[0].id;
-                    console.log('idstore',idstore);
-                    if(banner!==null){
-                        let filename=`store-${idstore}/${banner.name}`;
-                        s3.saveFileToS3(filename,banner.data);
-                        success(idstore);
-                    }
-                    else{
-                        success(idstore);
-                    }
-                }       
-            })    
+            let filename=`store-${idstore}/product-${name}/${nameFile}`;
+            s3.saveFileToS3(filename,file.data);
+            console.log(result);
+            success(result);
         }       
     })
 }
 
 
-module.exports.showStoreXid = (idstore,success,error)=>{
-    let query = `SELECT * FROM stores where id='${idstore}';`;
+module.exports.showProductsXStoreUrl = (urlstore,success,error)=>{
+    let query = `SELECT * FROM products where url='${urlstore}';`;
     db.query(query,function(err,result){
         if(err){
             console.log(err)
@@ -58,9 +40,8 @@ module.exports.showStoreXid = (idstore,success,error)=>{
     })    
 }
 
-
-module.exports.showStoreXURL = (urlstore,success,error)=>{
-    let query = `SELECT * FROM stores where url='${urlstore}';`;
+module.exports.showProductsXStoreId = (idstore,success,error)=>{
+    let query = `SELECT * FROM products where id='${idstore}';`;
     db.query(query,function(err,result){
         if(err){
             console.log(err)
@@ -71,8 +52,8 @@ module.exports.showStoreXURL = (urlstore,success,error)=>{
     })    
 }
 
-module.exports.showStoresXUser = (idadmin,success,error)=>{
-    let query = `SELECT * FROM stores where idadmin='${idadmin}';`;
+module.exports.showProducts = (success,error)=>{
+    let query = `SELECT * FROM products;`;
     db.query(query,function(err,result){
         if(err){
             console.log(err)
@@ -83,19 +64,7 @@ module.exports.showStoresXUser = (idadmin,success,error)=>{
     })    
 }
 
-module.exports.showStores = (success,error)=>{
-    let query = `SELECT * FROM stores;`;
-    db.query(query,function(err,result){
-        if(err){
-            console.log(err)
-            error(err);
-        }else{
-            success(result);
-        }       
-    })    
-}
-
-module.exports.deleteStore = (idstore,idadmin,success,error)=>{
+module.exports.deleteProduct = (idstore,idadmin,success,error)=>{
     
     let query = `DELETE FROM stores where id='${idstore}' and idadmin='${idadmin}';`;
     db.query(query,function(err,result){
@@ -111,9 +80,9 @@ module.exports.deleteStore = (idstore,idadmin,success,error)=>{
     })    
 }
 
-module.exports.editStore = (idstore,name,url,banner,idadmin,success,error)=>{
-    let nameBanner
-    banner===null?nameBanner='no-image':nameBanner=banner.name;
+module.exports.editProduct = (idstore,name,url,banner,idadmin,success,error)=>{
+    let nameFile
+    banner===null?nameFile='no-image':nameFile=banner.name;
     let queryid = `SELECT * FROM stores where id='${idstore}';`;
     db.query(queryid,function(err,result){
         if(err){
@@ -122,7 +91,7 @@ module.exports.editStore = (idstore,name,url,banner,idadmin,success,error)=>{
         }else{
          //Si es correcto se crea la carpeta del store para la gestion de files
             let query = `UPDATE stores SET name='${name}',url='${url}',banner='${banner.name}',idadmin='${idadmin}' where id='${idstore}';`;
-            db.query(query,[name,url,nameBanner,idadmin],function(err,result){
+            db.query(query,[name,url,nameFile,idadmin],function(err,result){
                 if(err){
                     console.log(err)
                     error(err);

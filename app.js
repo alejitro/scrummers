@@ -15,8 +15,8 @@ if(process.env.NODE_ENV === 'dev'){
 
 const usersController = require('./app/controller/users.ctrl.js');
 const storesController = require('./app/controller/stores.ctrl.js');
-/*const productsController = require('./app/controller/products.ctrl.js');
-const filesController = require('./app/controller/files.ctrl.js');
+const productsController = require('./app/controller/products.ctrl.js');
+/*const filesController = require('./app/controller/files.ctrl.js');
 */
 var app = express();
 app.options('*', cors());
@@ -33,14 +33,14 @@ server.on('listening', function() {
 //app.use(logger('dev'));
 app.use(express.json());
 app.use(cookieParser());
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 //app.use('/api/Voces', serveIndex(path.join(__dirname, 'Voces')));
 //app.use('/api/Voces', express.static(path.join(__dirname, 'Voces')));
 //app.use('/api/images', express.static(path.join(__dirname, 'public/images')));
 app.use('/api/admin', [usersController]);
 app.use('/api/store', [storesController]);
-/*app.use('/api/product', [productsController]);
-app.use('/api/file', [filesController]);
+app.use('/api/product', [productsController]);
+/*app.use('/api/file', [filesController]);
 app.use(express.static(path.join(__dirname, 'front/build')));
 app.get('/*', function(req, res) {
     console.log('estatico')

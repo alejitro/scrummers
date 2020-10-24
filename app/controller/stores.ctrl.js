@@ -47,9 +47,21 @@ routr.get('/get/admin/:idadmin', (req, res) => {
 })
 
 routr.get('/get/url/:url',(req, res) => {
-    console.log('req',req)
     storeSrv.showStoreXURL(
         req.params.url,
+        function (store) {
+            res.status(200).send(store)
+        },function(error){
+            console.log(error)
+            res.status(500).send({'message':'Error al obtener store por url'});
+        }
+    )
+
+})
+
+routr.get('/get/id/:id',(req, res) => {
+    storeSrv.showStoreXid(
+        req.params.id,
         function (store) {
             res.status(200).send(store)
         },function(error){
@@ -87,13 +99,20 @@ routr.delete('/delete/:id/:idadmin',(req, res) => {
 
 })
 
-routr.post('/editar',ensureToken,(req, res) => {
-    storeSrv.editar(
+//routr.put('/edit',ensureToken,(req, res) => {
+routr.put('/edit',(req, res) => {
+    let banner
+    if (!req.files) {
+        banner = null;
+    }
+    else{
+        banner=req.files.banner
+    }
+    storeSrv.editStore(
         req.body.idstore,
         req.body.name,
-        req.body.valor,
         req.body.url,
-        req.body.banner,
+        banner,
         req.body.idadmin,
         function (store) {
             res.status(200).send({'exito':true,'message':`Store ${store} updated succesfuly`})
