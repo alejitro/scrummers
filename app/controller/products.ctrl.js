@@ -27,17 +27,49 @@ routr.post('/create',(req, res) => {
 
 })
 
+routr.get('/get/store/:idstore',(req, res) => {
+    productsServices.showProductsXStoreId(
+        req.params.idstore,
+        function(products){
+            res.status(200).send(products)
+        },function(error){
+            res.status(500).send({'message':'Error fectching product'+error});
+        }
+    )
+
+})
+
+routr.get('/get/store/:urlstore',(req, res) => {
+    console.log('url: ',req.params.urlstore)
+    productsServices.showProductsXStoreUrl(
+        req.params.urlstore,
+        function(products){
+            res.status(200).send(products)
+        },function(error){
+            res.status(500).send({'message':'Error fetching product'+error});
+        }
+    )
+
+})
+
 routr.put('/update',(req, res) => {
+    let multimedia
+    if(req.files!==null){
+        multimedia=req.files.multimedia
+    }else{
+        multimedia="no-file"
+    }
     productsServices.updateProduct(
+        req.body.idproduct,
         req.body.name,
         req.body.idstore,
-        req.body.urlstore,
         req.body.quantity,
-        req.files.multimedia,
-        function(archivo){
-            res.status(201).send({'exito':true,'message':'archivo OK'});
+        multimedia,
+        req.body.urlstore,
+        function(product){
+            res.status(201).send({'exito':true,'message':`product ${product} updated succesfully`});
         },function(error){
-            res.status(500).send({'message':'Error en la creacion del archivo'+error});
+            res.status(500).send({'message':'Error updating product'+error});
         }
     )
 
@@ -52,6 +84,20 @@ routr.put('/update/inv/:quantity',(req, res) => {
             res.status(201).send({'exito':true,'message':`product ${product} inventory updated`});
         },function(error){
             res.status(500).send({'message':`Error updating product: `+error});
+        }
+    )
+
+})
+
+routr.delete('/delete/:id',(req, res) => {
+    productsServices.deleteProduct(
+        req.params.id,
+        req.body.idstore,
+        req.body.name,
+        function(product){
+            res.status(201).send({'exito':true,'message':`product ${product} deleted`});
+        },function(error){
+            res.status(500).send({'message':`Error deleting product: `+error});
         }
     )
 

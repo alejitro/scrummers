@@ -1,9 +1,4 @@
 var AWS = require('aws-sdk');
-//var aws_sqs = require ('./app/services/sqs')
-//Cambios para Heroku
-var conf= require('./config.js')
-
-
 const dotenv = require('dotenv');
 
 dotenv.config( {path: './environments/dev.env'});
@@ -99,9 +94,14 @@ const configureCors = (bucket)=>{
 }
 
 module.exports.deleteBucketFolder = (raiz) => {
-
+  console.log("raiz",raiz);
+  let dir;
   let split = raiz.split('/');
-  let dir =split[0]+"/";
+  if(split.length>1){
+    dir =split[0]+"/"+split[split.length-1]+"/";
+  }else{
+    dir =split[0]+"/";
+  }
   emptyBucket(dir);    
 }
 

@@ -29,19 +29,21 @@ module.exports.createProduct = (name,idstore,quantity,file,urlstore,success,erro
 
 
 module.exports.showProductsXStoreUrl = (urlstore,success,error)=>{
-    let query = `SELECT * FROM products where url='${urlstore}';`;
+    let query = `SELECT * FROM products where urlstore='${urlstore}';`;
     db.query(query,function(err,result){
+        console.log(result);
         if(err){
             console.log(err)
             error(err);
         }else{
+            console.log(result);
             success(result);
         }       
     })    
 }
 
 module.exports.showProductsXStoreId = (idstore,success,error)=>{
-    let query = `SELECT * FROM products where id='${idstore}';`;
+    let query = `SELECT * FROM products where store='${idstore}';`;
     db.query(query,function(err,result){
         if(err){
             console.log(err)
@@ -52,76 +54,69 @@ module.exports.showProductsXStoreId = (idstore,success,error)=>{
     })    
 }
 
-module.exports.showProducts = (success,error)=>{
-    let query = `SELECT * FROM products;`;
-    db.query(query,function(err,result){
-        if(err){
-            console.log(err)
-            error(err);
-        }else{
-            success(result);
-        }       
-    })    
-}
-
-module.exports.deleteProduct = (idstore,idadmin,success,error)=>{
+module.exports.deleteProduct = (idproduct,idstore,name,success,error)=>{
     
-    let query = `DELETE FROM stores where id='${idstore}' and idadmin='${idadmin}';`;
+    let query = `DELETE FROM products where store='${idstore}' and id='${idproduct}';`;
     db.query(query,function(err,result){
         if(err){
             console.log(err)
             error(err);
         }else{
-            let route=`store-${idstore}`;
+            let route=`store-${idstore}/product-${name}`;
             console.log("store to delete :", route);
             s3.deleteBucketFolder(route);
-            success(result);
+            success(idproduct);
         }       
     })    
 }
 
-module.exports.editProduct = (idstore,name,url,banner,idadmin,success,error)=>{
+module.exports.updateProduct = (idproduct,name,idstore,quantity,file,urlstore,success,error)=>{
     let nameFile
-    banner===null?nameFile='no-image':nameFile=banner.name;
-    let queryid = `SELECT * FROM stores where id='${idstore}';`;
+    file===null?nameFile='no-file':nameFile=file.name;
+    let queryid = `SELECT * FROM products where store='${idstore}' and id='${idproduct}';`;
+    db.query(queryid,function(err,result){
+        if(err){
+            console.log(err)
+            error(err);
+        }else{
+            let query = `UPDATE products SET name='${name}',urlstore='${urlstore}',multimedia='${nameFile}',
+                        store='${idstore}',quantity='${quantity}' where id='${idproduct}';`;
+            db.query(query,function(err,result){
+                if(err){
+                    console.log(err)
+                    error(err);
+                }else{
+                    if(file!==null){
+                        let filename=`store-${idstore}/product-${idproduct}/${file.name}`;
+                        s3.saveFileToS3(filename,file.data);
+                        success(idproduct);
+                    }
+                    else{
+                        success(idproduct);
+                    }
+                }       
+            })    
+        }       
+    })
+}
+
+module.exports.updateProductInventory = (idproduct,idstore,quantity,success,error)=>{
+    let queryid = `SELECT * FROM products where store='${idstore}' and id='${idproduct}';`;
     db.query(queryid,function(err,result){
         if(err){
             console.log(err)
             error(err);
         }else{
          //Si es correcto se crea la carpeta del store para la gestion de files
-            let query = `UPDATE stores SET name='${name}',url='${url}',banner='${banner.name}',idadmin='${idadmin}' where id='${idstore}';`;
-            db.query(query,[name,url,nameFile,idadmin],function(err,result){
+            let query = `UPDATE products SET quantity='${quantity}' where store='${idstore}' and id='${idproduct}';`;
+            db.query(query,function(err,result){
                 if(err){
                     console.log(err)
                     error(err);
                 }else{
-                    //let idstore=result[0].id;
-                    //console.log('idstore',idstore);
-                    if(banner!==null){
-                        let filename=`store-${idstore}/${banner.name}`;
-                        s3.saveFileToS3(filename,banner.data,false,);
-                        success(idstore);
-                    }
-                    else{
-                        success(idstore);
-                    }
+                    success(idproduct);
                 }       
             })    
         }       
     })
-    
-      /*ddb.update(params,function(err,result){
-        if(err){
-            error(err);
-        }else{
-            files.actualizarRuta(url,idstores, function (files) {
-                success("ok");  
-            },function(error){
-                console.log(error);
-                  
-            })
-    
-        }
-    })*/
 }
