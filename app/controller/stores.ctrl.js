@@ -99,8 +99,7 @@ routr.delete('/delete/:id/:idadmin',(req, res) => {
 
 })
 
-//routr.put('/edit',ensureToken,(req, res) => {
-routr.put('/edit',(req, res) => {
+routr.put('/edit',ensureToken,(req, res) => {
     let banner
     if (!req.files) {
         banner = null;
@@ -112,8 +111,8 @@ routr.put('/edit',(req, res) => {
         req.body.idstore,
         req.body.name,
         req.body.url,
-        banner,
         req.body.idadmin,
+        banner,
         function (store) {
             res.status(200).send({'exito':true,'message':`Store ${store} updated succesfuly`})
         },function(error){

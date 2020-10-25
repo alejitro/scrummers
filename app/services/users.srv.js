@@ -25,8 +25,8 @@ module.exports.loginAdmin = (email, password, success, error) => {
         if(err){
             error(err);
         }else{
-            console.log("Result",result[0])
-            if(result[0]!=undefined){
+            if(result!=undefined){
+                console.log("Result",result[0].id)
                 if (result[0].password === password) {
                     let user = result[0].id;
                     let email = result[0].email;

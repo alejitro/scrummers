@@ -111,9 +111,10 @@ module.exports.deleteStore = (idstore,idadmin,success,error)=>{
     })    
 }
 
-module.exports.editStore = (idstore,name,url,banner,idadmin,success,error)=>{
+module.exports.editStore = (idstore,name,url,idadmin,banner,success,error)=>{
     let nameBanner
     banner===null?nameBanner='no-image':nameBanner=banner.name;
+    console.log("Nombre tienda:", name);
     let queryid = `SELECT * FROM stores where id='${idstore}';`;
     db.query(queryid,function(err,result){
         if(err){
@@ -121,8 +122,8 @@ module.exports.editStore = (idstore,name,url,banner,idadmin,success,error)=>{
             error(err);
         }else{
          //Si es correcto se crea la carpeta del store para la gestion de files
-            let query = `UPDATE stores SET name='${name}',url='${url}',banner='${banner.name}',idadmin='${idadmin}' where id='${idstore}';`;
-            db.query(query,[name,url,nameBanner,idadmin],function(err,result){
+            let query = `UPDATE stores SET name='${name}',url='${url}',banner='${nameBanner}',idadmin='${idadmin}' where id='${idstore}';`;
+            db.query(query,function(err,result){
                 if(err){
                     console.log(err)
                     error(err);

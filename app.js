@@ -17,6 +17,7 @@ const usersController = require('./app/controller/users.ctrl.js');
 const storesController = require('./app/controller/stores.ctrl.js');
 const productsController = require('./app/controller/products.ctrl.js');
 const attributesController = require('./app/controller/attributes.ctrl.js');
+const inventoryController = require('./app/controller/inventory.ctrl.js');
 
 var app = express();
 /*const swaggerUi = require('swagger-ui-express');
@@ -39,17 +40,16 @@ server.on('listening', function() {
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use('/api/Voces', serveIndex(path.join(__dirname, 'Voces')));
-//app.use('/api/Voces', express.static(path.join(__dirname, 'Voces')));
-//app.use('/api/images', express.static(path.join(__dirname, 'public/images')));
+app.use('/api/images', express.static(path.join(__dirname, 'public/images')));
 app.use('/api/admin', [usersController]);
 app.use('/api/store', [storesController]);
 app.use('/api/product', [productsController]);
 app.use('/api/attribute', [attributesController]);
-/*app.use(express.static(path.join(__dirname, 'front/build')));
+app.use('/api/inventory', [inventoryController]);
+app.use(express.static(path.join(__dirname, 'front/build')));
 app.get('/*', function(req, res) {
     console.log('estatico')
     res.sendFile(path.join(__dirname, 'front/build', 'index.html'));
-  });*/
+  });
 //app.use('/Voces',express.directory(path.join(__dirname, './Voces')));
 module.exports = app;

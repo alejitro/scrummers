@@ -14,10 +14,12 @@ routr.post('/create',(req, res) => {
     }
     productsServices.createProduct(
         req.body.name,
-        req.body.idstore,
-        req.body.quantity,
         multimedia,
+        req.body.price,
+        req.body.quantity,
+        req.body.store,
         req.body.urlstore,
+        req.body.salesprice,
         function(){
             res.status(201).send({'Success':true,'message':`product creation OK`});
         },function(error){
@@ -39,7 +41,7 @@ routr.get('/get/store/:idstore',(req, res) => {
 
 })
 
-routr.get('/get/store/:urlstore',(req, res) => {
+routr.get('/get/store/url/:urlstore',(req, res) => {
     console.log('url: ',req.params.urlstore)
     productsServices.showProductsXStoreUrl(
         req.params.urlstore,
@@ -70,20 +72,6 @@ routr.put('/update',(req, res) => {
             res.status(201).send({'exito':true,'message':`product ${product} updated succesfully`});
         },function(error){
             res.status(500).send({'message':'Error updating product'+error});
-        }
-    )
-
-})
-
-routr.put('/update/inv/:quantity',(req, res) => {
-    productsServices.updateProductInventory(
-        req.body.idproduct,
-        req.body.idstore,
-        req.params.quantity,
-        function(product){
-            res.status(201).send({'exito':true,'message':`product ${product} inventory updated`});
-        },function(error){
-            res.status(500).send({'message':`Error updating product: `+error});
         }
     )
 

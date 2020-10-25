@@ -10,16 +10,16 @@ const s3 = require('../../s3Storage');
 
 //Create store
 //Function that allow create a product associated to a store in the app
-module.exports.createProduct = (name,idstore,quantity,file,urlstore,success,error)=>{
+module.exports.createProduct = (name,file,price,quantity,store,urlstore,salesprice,success,error)=>{
     let nameFile
     file===null?nameFile='no-file':nameFile=file.name;
-    let query = `INSERT INTO products (name,multimedia,quantity,store,urlstore) VALUES (?, ?,?,?,?);`;
-    db.query(query,[name,nameFile,quantity,idstore,urlstore],function(err,result){
+    let query = `INSERT INTO products (name,multimedia,price,quantity,store,urlstore,salesprice) VALUES (?,?,?,?,?,?,?);`;
+    db.query(query,[name,nameFile,price,quantity,store,urlstore,salesprice],function(err,result){
         if(err){
             console.log(err)
             error(err);
         }else{
-            let filename=`store-${idstore}/product-${name}/${nameFile}`;
+            let filename=`store-${store}/product-${name}/${nameFile}`;
             s3.saveFileToS3(filename,file.data);
             console.log(result);
             success(result);

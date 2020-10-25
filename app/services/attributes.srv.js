@@ -42,7 +42,7 @@ module.exports.deleteAttribute = (idattribute,idproduct,success,error)=>{
     })    
 }
 
-module.exports.updateProduct = (idattribute,name,description,idproduct,success,error)=>{
+module.exports.updateAttribute = (idattribute,name,description,idproduct,success,error)=>{
     let queryid = `SELECT * FROM attributes where product='${idproduct}' and id='${idattribute}';`;
     let query = `UPDATE attributes SET name='${name}',description='${description}' where id='${idattribute}';`;
     db.query(queryid,function(err,result){
