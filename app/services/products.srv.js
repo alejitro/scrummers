@@ -99,24 +99,3 @@ module.exports.updateProduct = (idproduct,name,idstore,quantity,file,urlstore,su
         }       
     })
 }
-
-module.exports.updateProductInventory = (idproduct,idstore,quantity,success,error)=>{
-    let queryid = `SELECT * FROM products where store='${idstore}' and id='${idproduct}';`;
-    db.query(queryid,function(err,result){
-        if(err){
-            console.log(err)
-            error(err);
-        }else{
-         //Si es correcto se crea la carpeta del store para la gestion de files
-            let query = `UPDATE products SET quantity='${quantity}' where store='${idstore}' and id='${idproduct}';`;
-            db.query(query,function(err,result){
-                if(err){
-                    console.log(err)
-                    error(err);
-                }else{
-                    success(idproduct);
-                }       
-            })    
-        }       
-    })
-}
