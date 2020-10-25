@@ -16,9 +16,14 @@ if(process.env.NODE_ENV === 'dev'){
 const usersController = require('./app/controller/users.ctrl.js');
 const storesController = require('./app/controller/stores.ctrl.js');
 const productsController = require('./app/controller/products.ctrl.js');
-/*const filesController = require('./app/controller/files.ctrl.js');
-*/
+const attributesController = require('./app/controller/attributes.ctrl.js');
+
 var app = express();
+/*const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+ 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));*/
+
 app.options('*', cors());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -40,8 +45,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/admin', [usersController]);
 app.use('/api/store', [storesController]);
 app.use('/api/product', [productsController]);
-/*app.use('/api/file', [filesController]);
-app.use(express.static(path.join(__dirname, 'front/build')));
+app.use('/api/attribute', [attributesController]);
+/*app.use(express.static(path.join(__dirname, 'front/build')));
 app.get('/*', function(req, res) {
     console.log('estatico')
     res.sendFile(path.join(__dirname, 'front/build', 'index.html'));
