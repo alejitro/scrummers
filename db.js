@@ -4,11 +4,8 @@ const mysql = require('mysql');
 const dotenv = require('dotenv');
 
 let connection;
-if (process.env.NODE_ENV === 'dev'){
-    dotenv.config( {path: "./environments/dev.env"});
-} else {
-    dotenv.config( {path: "./environments/prod.env"});;
-}
+dotenv.config( {path: "./environments/dev.env"});
+
 function connectDB(){
     if(!connection){
         connection = mysql.createConnection({

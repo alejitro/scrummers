@@ -3,7 +3,7 @@
 var db = require('../../db.js');
 var attr= require('./attributes.srv');
 var inv = require('./inventory.srv');
-const s3 = require('../../s3Storage');
+const S3 = require('../../s3Storage');
 
 
 //Crear Producto
@@ -20,7 +20,7 @@ module.exports.createProduct = (name,file,price,store,urlstore,salesprice,attrib
             let productId=result.insertId;
             if(file!==null){
                 let filename=`store-${store}/product-${productId}/${nameFile}`;
-                s3.saveFileToS3(filename,file.data);
+                S3.saveFileToS3(filename,file.data);
             }
             inv.createInventory(productId,quantity,store,()=>{});
             if(attributes){
@@ -73,7 +73,7 @@ module.exports.deleteProduct = (idproduct,idstore,name,success,error)=>{
         }else{
             let route=`store-${idstore}/product-${name}`;
             console.log("store to delete :", route);
-            s3.deleteBucketFolder(route);
+            S3.deleteBucketFolder(route);
             success(idproduct);
         }       
     })    
@@ -97,7 +97,7 @@ module.exports.updateProduct = (idproduct,name,idstore,file,urlstore,success,err
                 }else{
                     if(file!==null){
                         let filename=`store-${idstore}/product-${idproduct}/${file.name}`;
-                        s3.saveFileToS3(filename,file.data);
+                        S3.saveFileToS3(filename,file.data);
                         success(idproduct);
                     }
                     else{

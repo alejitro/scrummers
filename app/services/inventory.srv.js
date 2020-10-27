@@ -69,14 +69,15 @@ module.exports.deleteInventory = (idattribute,idproduct,success,error)=>{
     })    
 }
 
-module.exports.updateInventory = (idproduct,idattribute,quantity,success,error)=>{
-    let query = `UPDATE attributes SET quantity='${quantity}' where product='${idproduct}' and attribute='${idattribute} ';`;
+module.exports.updateInventory = (idproduct,quantity,success,error)=>{
+    let query = `UPDATE inventory SET quantity='${quantity}' where product='${idproduct}';`;
     db.query(query,function(err,result){
         if(err){
             console.log(err)
             error(err);
         }else{
             console.log(result);
+            //success(result);
         }       
     })
 }

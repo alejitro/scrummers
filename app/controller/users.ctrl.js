@@ -3,6 +3,33 @@ var express = require('express')
 var routr = express.Router();
 var usersServices = require('../services/users.srv.js');
 
+
+
+/**
+* @swagger
+* /users:
+*   post:
+*     tags:
+*       — User
+*     summary: This should create a new admin.
+*     description: This is where you can create a new admin for the system
+*     consumes:
+*       — application/json
+*     parameters:
+*       — firstName: body
+*       LastName: body
+*       email: body    
+*       password: body
+*       schema:
+*         type: object
+*         properties:
+*           flavor:
+*           type: string
+*     responses: 
+*       201:
+*         description: Receive user id, email and JWToken
+*/
+
 //Ruta que permite la creacion de administradores en el sistema
 routr.post('/create', (req, res) => {
     usersServices.createAdmin(

@@ -7,23 +7,37 @@ const bodyParser = require('body-parser');
 const jwt  = require('jsonwebtoken');
 var serveIndex = require('serve-index');
 const dotenv = require('dotenv');
-if(process.env.NODE_ENV === 'dev'){
-  dotenv.config( {path: "./environments/dev.env"});
-}else{
-  dotenv.config( {path: "./environments/prod.env"});
-}
+dotenv.config( {path: "./environments/dev.env"});
 
 const usersController = require('./app/controller/users.ctrl.js');
 const storesController = require('./app/controller/stores.ctrl.js');
 const productsController = require('./app/controller/products.ctrl.js');
 const attributesController = require('./app/controller/attributes.ctrl.js');
 const inventoryController = require('./app/controller/inventory.ctrl.js');
+const multimediaController = require('./app/controller/multimedia.ctrl.js');
+const salesController = require('./app/controller/sales.ctrl.js');
 
 var app = express();
-/*const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
- 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));*/
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require("swagger-jsdoc");
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      title: "Scrummer API",
+      description: "Scrummer API Information",
+      contact: {
+        name: "Alejandro Martinez",
+        email:"alejitro@gmail.com"
+      },
+      servers: ["http://localhost:8080"]
+    }
+  },
+  apis: ["./app/controller/*.js"]
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.options('*', cors());
 app.use(cors());
@@ -46,6 +60,8 @@ app.use('/api/store', [storesController]);
 app.use('/api/product', [productsController]);
 app.use('/api/attribute', [attributesController]);
 app.use('/api/inventory', [inventoryController]);
+app.use('/api/multimedia', [multimediaController]);
+app.use('/api/sales', [salesController]);
 app.use(express.static(path.join(__dirname, 'front/build')));
 /*app.get('/*', function(req, res) {
     console.log('estatico')

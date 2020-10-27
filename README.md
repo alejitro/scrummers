@@ -5,7 +5,7 @@ NodeJS
 In the root folder run
 `npm install`
 `npm start`
-The Express server will run in port 3001
+The Express server will run in port 8080
 
 Then go to the front folder
 `cd front`

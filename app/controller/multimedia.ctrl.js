@@ -3,24 +3,25 @@ var express = require('express')
 const fileUpload = require('express-fileupload');
 var routr = express();
 routr.use(fileUpload());
-var attributesServices = require('../services/multimedia.srv.js');
+var fileServices = require('../services/multimedia.srv.js');
 
 routr.post('/create',(req, res) => {
-    attributesServices.createMultimedia(
+    fileServices.createMultimedia(
+        req.body.idstore,
         req.body.idproduct,
         req.files.file,
         function(){
-            res.status(201).send({'Success':true,'message':`attribute creation OK`});
+            res.status(201).send({'Success':true,'message':`multimedia creation OK`});
         },function(error){
-            res.status(500).send({'message':'Error creating attribute'+error});
+            res.status(500).send({'message':'Error creating multimedia'+error});
         }
     )
 
 })
 
 
-routr.get('/get/multimedia/:idproduct',(req, res) => {
-    attributesServices.showMultimediaXProductId(
+routr.get('/get/:idproduct',(req, res) => {
+    fileServices.showMultimediaXProductId(
         req.params.idproduct,
         function(multimedia){
             res.status(200).send(multimedia)
@@ -32,11 +33,11 @@ routr.get('/get/multimedia/:idproduct',(req, res) => {
 })
 
 routr.put('/update',(req, res) => {
-    attributesServices.updateMultimedia(
+    fileServices.updateMultimedia(
         req.body.idproduct,
         req.files.file,
-        function(attribute){
-            res.status(201).send({'exito':true,'message':`multimedia ${attribute} updated succesfully`});
+        function(multimedia){
+            res.status(201).send({'exito':true,'message':`multimedia ${multimedia} updated succesfully`});
         },function(error){
             res.status(500).send({'message':'Error updating multimedia'+error});
         }
@@ -45,7 +46,7 @@ routr.put('/update',(req, res) => {
 })
 
 routr.delete('/delete/:id',(req, res) => {
-    attributesServices.deleteMultimedia(
+    fileServices.deleteMultimedia(
         req.body.idproduct,
         function(multimedia){
             res.status(201).send({'exito':true,'message':`multimedia ${multimedia} deleted`});

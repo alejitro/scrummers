@@ -1,19 +1,21 @@
 'use strict'
 
-var db = require('../../db.js')
-var conf=require('../../config')
+var db = require('../../db.js');
+var conf=require('../../config');
+const s3 = require('../../s3Storage');
 
 //Create product
 //Function that allow create an attribute associated to a product in the app
-module.exports.createMultimedia = (idproduct,file,success,error)=>{
+module.exports.createMultimedia = (idstore,idproduct,file,success,error)=>{
     if(file){
-        let urlFileS3=`${conf.URLS3}/store-${idproduct}/${file.name}`;
+        let urlFileS3=`${conf.URLS3}/store-${idstore}/product-${idproduct}/${file.name}`;
         let query = `INSERT INTO multimedia (name,product,urls3) VALUES (?,?,?);`;
         db.query(query,[file.name,idproduct,urlFileS3],function(err,result){
             if(err){
                 console.log(err)
                 error(err);
             }else{
+                s3.saveFileToS3(urlFileS3,file.data);
                 success(result.insertId);
             }       
         })
@@ -49,14 +51,14 @@ module.exports.deleteMultimedia = (idproduct,success,error)=>{
 
 module.exports.updateMultimedia = (file,idproduct,success,error)=>{
     if(file){
-        let query = `UPDATE multimedia SET name='${file.name}',where product='${idproduct}';`;
+        let urlFileS3=`${conf.URLS3}/store-${idstore}/product-${idproduct}/${file.name}`;
+        let query = `UPDATE multimedia SET name='${file.name}', urls3='${urlFileS3}' where product='${idproduct}';`;
         db.query(query,function(err,result){
             if(err){
                 console.log(err)
                 error(err);
             }else{
-                let filename=`/product-${idproduct}/${file.name}`;
-                s3.saveFileToS3(filename,file.data);
+                s3.saveFileToS3(urlFileS3,file.data);
                 success(idproduct);
             }       
         })
