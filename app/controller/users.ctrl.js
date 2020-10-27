@@ -3,7 +3,7 @@ var express = require('express')
 var routr = express.Router();
 var usersServices = require('../services/users.srv.js');
 
-//Create admin Post request handler
+//Ruta que permite la creacion de administradores en el sistema
 routr.post('/create', (req, res) => {
     usersServices.createAdmin(
         req.body.firstName,
@@ -35,7 +35,7 @@ routr.post('/create', (req, res) => {
 })
 
 
-//Login admin Post request handler
+//Ruta que permite hacer login a los administradores del sistema
 routr.post('/login', (req, res) => {
     usersServices.loginAdmin(
         req.body.email,

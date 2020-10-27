@@ -3,3 +3,4 @@ package-lock.json
 *.env
 Stores/
 front
+public/images

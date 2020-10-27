@@ -4,15 +4,15 @@ var db = require('../../db.js')
 
 //Create product
 //Function that allow create an attribute associated to a product in the app
-module.exports.createAttribute = (name,description,idproduct,success,error)=>{
+module.exports.createAttribute = (name,idproduct,success,error)=>{
     
-    let query = `INSERT INTO attributes (name,description,product) VALUES (?,?,?);`;
-    db.query(query,[name,description,idproduct],function(err,result){
+    let query = `INSERT INTO attributes (name,product) VALUES (?,?);`;
+    db.query(query,[name,idproduct],function(err,result){
         if(err){
             console.log(err)
             error(err);
         }else{
-            success(result);
+            success(result.insertId);
         }       
     })
 }

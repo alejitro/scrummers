@@ -19,6 +19,7 @@ routr.post('/create',(req, res) => {
 
 })
 
+
 routr.get('/get/product/:idproduct',(req, res) => {
     attributesServices.showAttributesXProductId(
         req.params.idproduct,

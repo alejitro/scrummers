@@ -5,6 +5,7 @@ var routr = express();
 routr.use(fileUpload());
 var inventoryServices = require('../services/inventory.srv.js');
 
+
 routr.post('/create',(req, res) => {
     inventoryServices.createInventory(
         req.body.product,
@@ -42,10 +43,10 @@ routr.get('/get/attribute/:idattribute',(req, res) => {
 
 })
 
-routr.get('/get/prd_attr/:idproduct/:idattribute',(req, res) => {
-    inventoryServices.showInventoryXProductAndAttribute(
+routr.get('/get/store/:idstore/:idproduct',(req, res) => {
+    inventoryServices.showInventoryXStore(
+        req.params.idstore,
         req.params.idproduct,
-        req.params.idattribute,
         function(inventory){
             res.status(200).send(inventory)
         },function(error){

@@ -7,6 +7,7 @@ const security = require('../services/security.srv');
 
 routr.use(fileUpload());
 
+//Ruta que permite hacer la creacion de comercios en el sistema
 //routr.post('/create',ensureToken,(req, res) => {
 routr.post('/create',(req, res) => {
 
@@ -33,7 +34,7 @@ routr.post('/create',(req, res) => {
 })
 
 
-
+//Ruta para obtener las tiendas asociadas a un administrador
 routr.get('/get/admin/:idadmin', (req, res) => {
     storeSrv.showStoresXUser(
         req.params.idadmin,
@@ -46,6 +47,7 @@ routr.get('/get/admin/:idadmin', (req, res) => {
 
 })
 
+//Ruta para obtener una tienda por URL
 routr.get('/get/url/:url',(req, res) => {
     storeSrv.showStoreXURL(
         req.params.url,
@@ -59,6 +61,7 @@ routr.get('/get/url/:url',(req, res) => {
 
 })
 
+//Ruta para obtener una tienda por id
 routr.get('/get/id/:id',(req, res) => {
     storeSrv.showStoreXid(
         req.params.id,
@@ -72,6 +75,8 @@ routr.get('/get/id/:id',(req, res) => {
 
 })
 
+
+//Ruta para obtener todos los comercios del sistema
 routr.get('/get/all/',(req, res) => {
     storeSrv.showStores(
         function (store) {
@@ -84,7 +89,7 @@ routr.get('/get/all/',(req, res) => {
     )
 })
 
-
+//Ruta que permite a un administrador borrar el comercio de acuerdo a su id
 //routr.delete('/delete/:id/:idadmin',ensureToken, (req, res) => {
 routr.delete('/delete/:id/:idadmin',(req, res) => {
     storeSrv.deleteStore(
@@ -99,6 +104,7 @@ routr.delete('/delete/:id/:idadmin',(req, res) => {
 
 })
 
+//Ruta que permite editar los comercios existentes en el sistema
 routr.put('/edit',ensureToken,(req, res) => {
     let banner
     if (!req.files) {
@@ -123,6 +129,8 @@ routr.put('/edit',ensureToken,(req, res) => {
 
 })
 
+//Funcion que permite garantizar que las peticiones de creacion, actualizacion
+// y borrado de los comercios sean hechas por un administrador
 function ensureToken(req,res,next){
     const beareheader = req.headers['authorization'];
     console.log('bearerheader: '+beareheader);
