@@ -35,10 +35,12 @@ routr.get('/get/:idproduct',(req, res) => {
 
 routr.put('/update',(req, res) => {
     salesServices.updateSale(
-        req.body.idattribute,
-        req.body.name,
-        req.body.description,
+        req.body.idsale,
         req.body.idproduct,
+        req.body.quantity,
+        req.body.salesprice,
+        req.body.taxes,
+        req.body.totalprice,
         function(sale){
             res.status(201).send({'exito':true,'message':`sale ${sale} updated succesfully`});
         },function(error){

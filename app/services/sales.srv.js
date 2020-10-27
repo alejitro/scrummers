@@ -46,9 +46,9 @@ module.exports.showSalesXProductId = (idproduct,success,error)=>{
     })    
 }
 
-module.exports.deleteAttribute = (idattribute,idproduct,success,error)=>{
+module.exports.deleteSale = (idsale,idproduct,success,error)=>{
     
-    let query = `DELETE FROM attributes where product='${idproduct}' and id='${idattribute}';`;
+    let query = `DELETE FROM sales where product='${idproduct}' and idsale='${idsale}';`;
     db.query(query,function(err,result){
         if(err){
             console.log(err)
@@ -59,29 +59,15 @@ module.exports.deleteAttribute = (idattribute,idproduct,success,error)=>{
     })    
 }
 
-module.exports.updateAttribute = (idattribute,name,description,idproduct,success,error)=>{
-    let queryid = `SELECT * FROM attributes where product='${idproduct}' and id='${idattribute}';`;
-    let query = `UPDATE attributes SET name='${name}',description='${description}' where id='${idattribute}';`;
-    db.query(queryid,function(err,result){
+module.exports.updateSale = (idsale,idproduct,quantity,salesprice,totalprice,taxes,success,error)=>{
+    let query = `UPDATE sales SET quantiy='${quantity}',salesprice='${salesprice}', 
+                taxes=${taxes}, product=${idproduct}, totalprice=${totalprice} where id='${idsale}';`;
+    db.query(query,function(err,result){
         if(err){
             console.log(err)
             error(err);
         }else{
-            db.query(query,function(err,result){
-                if(err){
-                    console.log(err)
-                    error(err);
-                }else{
-                    if(file!==null){
-                        let filename=`product-${idproduct}/product-${idproduct}/${file.name}`;
-                        s3.saveFileToS3(filename,file.data);
-                        success(idproduct);
-                    }
-                    else{
-                        success(idproduct);
-                    }
-                }       
-            })    
+            success(idsale);
         }       
-    })
+    })    
 }
